@@ -2,9 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MashStudyDotNetCoreWebAPITutorials.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -31,8 +33,9 @@ namespace MashStudyDotNetCoreWebAPITutorials
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "MashStudyDotNetCoreWebAPITutorials", Version = "v1" });
             });
+            services.AddDbContext<DataContext>(options=>options.UseSqlServer(Configuration.GetConnectionString("StudyMashWebAPIConnectionStrings")));
         }
-
+        
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {

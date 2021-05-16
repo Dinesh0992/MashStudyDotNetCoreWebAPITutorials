@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-//using MashStudyDotNetCoreWebAPITutorials.Models;
+using MashStudyDotNetCoreWebAPITutorials.Data;
 
 namespace MashStudyDotNetCoreWebAPITutorials.Controllers
 {
@@ -11,12 +11,20 @@ namespace MashStudyDotNetCoreWebAPITutorials.Controllers
     [ApiController]
     public class CityController : ControllerBase
     {
-        public CityController()
+        public readonly DataContext dc;
+        public CityController(DataContext DC)
         {
+            dc = DC;
         }
 
+
+
         [HttpGet("")]
-        public ActionResult<IEnumerable<string>> Get() => new List<string> { "London", "Rome", "Paris" };
+        public IActionResult Get()
+        {
+            var cities = dc.Cities.ToList();
+            return Ok(cities);
+        }
 
         [HttpGet("{id}")]
         public ActionResult<string> Get(int id)
@@ -24,6 +32,6 @@ namespace MashStudyDotNetCoreWebAPITutorials.Controllers
             return "London";
         }
 
-        
+
     }
 }
