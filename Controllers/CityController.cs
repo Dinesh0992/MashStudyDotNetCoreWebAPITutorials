@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using MashStudyDotNetCoreWebAPITutorials.Data;
 using Microsoft.EntityFrameworkCore;
 using MashStudyDotNetCoreWebAPITutorials.Models;
+using MashStudyDotNetCoreWebAPITutorials.Data.Repo;
 
 namespace MashStudyDotNetCoreWebAPITutorials.Controllers
 {
@@ -13,21 +14,21 @@ namespace MashStudyDotNetCoreWebAPITutorials.Controllers
     [ApiController]
     public class CityController : ControllerBase
     {
-        public readonly DataContext dc;
-        public CityController(DataContext DC)
+        
+        private readonly ICityRepository repo;
+
+        public CityController(ICityRepository repo)
         {
-            dc = DC;
+            this.repo = repo;
         }
-
-
 
         [HttpGet("")]
         public async Task<IActionResult> Get()
         {
-            var cities = await dc.Cities.ToListAsync();
+            var cities = await repo.GetCitiesAsync();
             return Ok(cities);
         }
-
+        /*
         [HttpPost("addcity/{cityname}")]
         public async Task<IActionResult> AddCity(string CityName)
         {
@@ -37,23 +38,23 @@ namespace MashStudyDotNetCoreWebAPITutorials.Controllers
             await dc.SaveChangesAsync();
             return Ok(newcity);
         }
+        */
 
         [HttpPost("post/addcity")]
         public async Task<IActionResult> AddCity([FromBody] City newcity)
         {
             // City newcity = new City();
             // newcity.Name = CityName;
-            await dc.Cities.AddAsync(newcity);
-            await dc.SaveChangesAsync();
-            return Ok(newcity);
+             repo.AddCity(newcity); 
+            await repo.SaveAsync();
+            return StatusCode(201);
         }
 
         [HttpDelete("delete/{id}")]
         public async Task<IActionResult> DeleteCity(int id)
         {
-            var city = await dc.Cities.FindAsync(id);
-            dc.Cities.Remove(city);
-            await dc.SaveChangesAsync();
+           repo.DeleteCity(id);
+            await repo.SaveAsync();
             return Ok(id);
         }
 
