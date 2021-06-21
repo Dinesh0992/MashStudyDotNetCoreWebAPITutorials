@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using MashStudyDotNetCoreWebAPITutorials.Data;
 using Microsoft.EntityFrameworkCore;
 using MashStudyDotNetCoreWebAPITutorials.Models;
-using MashStudyDotNetCoreWebAPITutorials.Data.Repo;
+using MashStudyDotNetCoreWebAPITutorials.Interfaces;
 
 namespace MashStudyDotNetCoreWebAPITutorials.Controllers
 {
@@ -15,17 +15,17 @@ namespace MashStudyDotNetCoreWebAPITutorials.Controllers
     public class CityController : ControllerBase
     {
         
-        private readonly ICityRepository repo;
+        private readonly IUnitOfWork uow;
 
-        public CityController(ICityRepository repo)
+        public CityController(IUnitOfWork _uow)
         {
-            this.repo = repo;
+            this.uow = _uow;
         }
 
         [HttpGet("")]
         public async Task<IActionResult> Get()
         {
-            var cities = await repo.GetCitiesAsync();
+            var cities = await uow.CityRepository.GetCitiesAsync();
             return Ok(cities);
         }
         /*
@@ -45,16 +45,16 @@ namespace MashStudyDotNetCoreWebAPITutorials.Controllers
         {
             // City newcity = new City();
             // newcity.Name = CityName;
-             repo.AddCity(newcity); 
-            await repo.SaveAsync();
+             uow.CityRepository.AddCity(newcity); 
+            await uow.SaveAsync();
             return StatusCode(201);
         }
 
         [HttpDelete("delete/{id}")]
         public async Task<IActionResult> DeleteCity(int id)
         {
-           repo.DeleteCity(id);
-            await repo.SaveAsync();
+           uow.CityRepository.DeleteCity(id);
+            await uow.SaveAsync();
             return Ok(id);
         }
 

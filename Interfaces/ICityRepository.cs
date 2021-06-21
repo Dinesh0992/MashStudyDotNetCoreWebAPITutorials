@@ -3,7 +3,7 @@ using System;
 using System.Threading.Tasks;
 using MashStudyDotNetCoreWebAPITutorials.Models;
 
-namespace MashStudyDotNetCoreWebAPITutorials.Data.Repo
+namespace MashStudyDotNetCoreWebAPITutorials.Interfaces
 {
     public interface ICityRepository
     {
@@ -11,7 +11,7 @@ namespace MashStudyDotNetCoreWebAPITutorials.Data.Repo
          void AddCity(City city);
          void DeleteCity(int CityId);
 
-         Task<bool> SaveAsync();
+        //  Task<bool> SaveAsync();
 
 
     }

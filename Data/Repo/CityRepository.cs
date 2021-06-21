@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using MashStudyDotNetCoreWebAPITutorials.Models;
 using Microsoft.EntityFrameworkCore;
+using MashStudyDotNetCoreWebAPITutorials.Interfaces;
 
 namespace MashStudyDotNetCoreWebAPITutorials.Data.Repo
 {
@@ -14,9 +15,7 @@ namespace MashStudyDotNetCoreWebAPITutorials.Data.Repo
         {
             Dc = dc;
         }
-
-       
-
+        
         public void AddCity(City city)
         {
             Dc.Cities.Add(city);
@@ -34,9 +33,9 @@ namespace MashStudyDotNetCoreWebAPITutorials.Data.Repo
 
         }
 
-        public async Task<bool> SaveAsync()
-        {
-            return await Dc.SaveChangesAsync()>0;
-        }
+        // public async Task<bool> SaveAsync()
+        // {
+        //     return await Dc.SaveChangesAsync()>0;
+        // }
     }
 }
