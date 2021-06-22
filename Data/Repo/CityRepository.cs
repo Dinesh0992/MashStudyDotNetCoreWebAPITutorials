@@ -27,6 +27,12 @@ namespace MashStudyDotNetCoreWebAPITutorials.Data.Repo
             Dc.Cities.Remove(city);
         }
 
+        public async Task<City> FindCity(int id)
+        {
+           return  await Dc.Cities.FindAsync(id);
+            // return  await Dc.Cities.FirstOrDefaultAsync(x=>x.Id==id);
+        }
+
         public  async Task<IEnumerable<City>> GetCitiesAsync()
         {
             return  await Dc.Cities.ToListAsync();

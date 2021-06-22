@@ -10,6 +10,7 @@ using MashStudyDotNetCoreWebAPITutorials.Models;
 using MashStudyDotNetCoreWebAPITutorials.Interfaces;
 using MashStudyDotNetCoreWebAPITutorials.Dto;
 using AutoMapper;
+using Microsoft.AspNetCore.JsonPatch;
 
 namespace MashStudyDotNetCoreWebAPITutorials.Controllers
 {
@@ -59,12 +60,53 @@ namespace MashStudyDotNetCoreWebAPITutorials.Controllers
             //     LastUpdatedby = 1,
             //     LastUpdatedOn = DateTime.Now
             // };
-            City city=mapper.Map<City>(newcity);
-            city.LastUpdatedby=1;
-            city.LastUpdatedOn=DateTime.Now;
+            City city = mapper.Map<City>(newcity);
+            city.LastUpdatedby = 1;
+            city.LastUpdatedOn = DateTime.Now;
             uow.CityRepository.AddCity(city);
             await uow.SaveAsync();
             return StatusCode(201);
+        }
+
+        [HttpPut("updatecity")]
+        public async Task<IActionResult> UpdateCity([FromBody] CityDto newcity)
+        {
+
+            var cityfromDb = await uow.CityRepository.FindCity(newcity.Id);
+            cityfromDb.LastUpdatedby = 1;
+            cityfromDb.LastUpdatedOn = DateTime.Now;
+            mapper.Map(newcity, cityfromDb);
+            await uow.SaveAsync();
+            return StatusCode(200);
+
+        }
+
+        /*
+        [
+          {
+            "op": "replace",   
+            "path": "/Name",
+            "value" : "New York"
+          },
+           {
+            "op": "replace",   
+            "path": "/Country",
+            "value" : "USA"
+        }
+        ]
+        */
+        [HttpPatch("updatepatchcity/{id}")]
+        public async Task<IActionResult> UpdatePatchCity(int id, [FromBody] JsonPatchDocument<City> citypatch)
+        {
+
+            var cityfromDb = await uow.CityRepository.FindCity(id);
+            cityfromDb.LastUpdatedby = 1;
+            cityfromDb.LastUpdatedOn = DateTime.Now;
+            // mapper.Map(newcity,cityfromDb);
+            citypatch.ApplyTo(cityfromDb, ModelState);
+            await uow.SaveAsync();
+            return StatusCode(200);
+
         }
 
         [HttpDelete("delete/{id}")]
