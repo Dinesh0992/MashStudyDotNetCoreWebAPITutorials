@@ -1,3 +1,4 @@
+using System.Collections;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +8,7 @@ using MashStudyDotNetCoreWebAPITutorials.Data;
 using Microsoft.EntityFrameworkCore;
 using MashStudyDotNetCoreWebAPITutorials.Models;
 using MashStudyDotNetCoreWebAPITutorials.Interfaces;
+using MashStudyDotNetCoreWebAPITutorials.Dto;
 
 namespace MashStudyDotNetCoreWebAPITutorials.Controllers
 {
@@ -26,7 +28,8 @@ namespace MashStudyDotNetCoreWebAPITutorials.Controllers
         public async Task<IActionResult> Get()
         {
             var cities = await uow.CityRepository.GetCitiesAsync();
-            return Ok(cities);
+            IEnumerable<CityDto> citiesDto=cities.Select(x=>new CityDto{Id=x.Id,Name=x.Name});
+            return Ok(citiesDto);
         }
         /*
         [HttpPost("addcity/{cityname}")]
@@ -41,11 +44,16 @@ namespace MashStudyDotNetCoreWebAPITutorials.Controllers
         */
 
         [HttpPost("post/addcity")]
-        public async Task<IActionResult> AddCity([FromBody] City newcity)
+        public async Task<IActionResult> AddCity([FromBody] CityDto newcity)
         {
             // City newcity = new City();
             // newcity.Name = CityName;
-             uow.CityRepository.AddCity(newcity); 
+            City city=new City{
+                Name=newcity.Name,
+                LastUpdatedby=1,
+                LastUpdatedOn=DateTime.Now
+            };
+             uow.CityRepository.AddCity(city); 
             await uow.SaveAsync();
             return StatusCode(201);
         }
