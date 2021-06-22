@@ -4,11 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using MashStudyDotNetCoreWebAPITutorials.Data;
-using Microsoft.EntityFrameworkCore;
+//using MashStudyDotNetCoreWebAPITutorials.Data;
+//using Microsoft.EntityFrameworkCore;
 using MashStudyDotNetCoreWebAPITutorials.Models;
 using MashStudyDotNetCoreWebAPITutorials.Interfaces;
 using MashStudyDotNetCoreWebAPITutorials.Dto;
+using AutoMapper;
 
 namespace MashStudyDotNetCoreWebAPITutorials.Controllers
 {
@@ -16,19 +17,23 @@ namespace MashStudyDotNetCoreWebAPITutorials.Controllers
     [ApiController]
     public class CityController : ControllerBase
     {
-        
+
         private readonly IUnitOfWork uow;
 
-        public CityController(IUnitOfWork _uow)
+        public IMapper mapper { get; }
+
+        public CityController(IUnitOfWork _uow, IMapper mapper)
         {
             this.uow = _uow;
+            this.mapper = mapper;
         }
 
         [HttpGet("")]
         public async Task<IActionResult> Get()
         {
             var cities = await uow.CityRepository.GetCitiesAsync();
-            IEnumerable<CityDto> citiesDto=cities.Select(x=>new CityDto{Id=x.Id,Name=x.Name});
+            //   IEnumerable<CityDto> citiesDto=cities.Select(x=>new CityDto{Id=x.Id,Name=x.Name});
+            IEnumerable<CityDto> citiesDto = mapper.Map<IEnumerable<CityDto>>(cities);
             return Ok(citiesDto);
         }
         /*
@@ -48,12 +53,16 @@ namespace MashStudyDotNetCoreWebAPITutorials.Controllers
         {
             // City newcity = new City();
             // newcity.Name = CityName;
-            City city=new City{
-                Name=newcity.Name,
-                LastUpdatedby=1,
-                LastUpdatedOn=DateTime.Now
-            };
-             uow.CityRepository.AddCity(city); 
+            // City city = new City
+            // {
+            //     Name = newcity.Name,
+            //     LastUpdatedby = 1,
+            //     LastUpdatedOn = DateTime.Now
+            // };
+            City city=mapper.Map<City>(newcity);
+            city.LastUpdatedby=1;
+            city.LastUpdatedOn=DateTime.Now;
+            uow.CityRepository.AddCity(city);
             await uow.SaveAsync();
             return StatusCode(201);
         }
@@ -61,7 +70,7 @@ namespace MashStudyDotNetCoreWebAPITutorials.Controllers
         [HttpDelete("delete/{id}")]
         public async Task<IActionResult> DeleteCity(int id)
         {
-           uow.CityRepository.DeleteCity(id);
+            uow.CityRepository.DeleteCity(id);
             await uow.SaveAsync();
             return Ok(id);
         }

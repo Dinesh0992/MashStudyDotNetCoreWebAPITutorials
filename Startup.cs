@@ -9,6 +9,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 
 using MashStudyDotNetCoreWebAPITutorials.Interfaces;
+using MashStudyDotNetCoreWebAPITutorials.Helpers;
 
 namespace MashStudyDotNetCoreWebAPITutorials
 {
@@ -33,6 +34,7 @@ namespace MashStudyDotNetCoreWebAPITutorials
             });
             services.AddDbContext<DataContext>(options=>options.UseSqlServer(Configuration.GetConnectionString("StudyMashWebAPIConnectionStrings")));
             services.AddScoped<IUnitOfWork,UnitOfWork>();
+            services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
         }
         
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
