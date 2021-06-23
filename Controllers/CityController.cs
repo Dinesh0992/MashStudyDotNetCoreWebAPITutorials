@@ -32,6 +32,7 @@ namespace MashStudyDotNetCoreWebAPITutorials.Controllers
         [HttpGet("")]
         public async Task<IActionResult> Get()
         {
+            //  throw new UnauthorizedAccessException();  for global exception checking
             var cities = await uow.CityRepository.GetCitiesAsync();
             //   IEnumerable<CityDto> citiesDto=cities.Select(x=>new CityDto{Id=x.Id,Name=x.Name});
             IEnumerable<CityDto> citiesDto = mapper.Map<IEnumerable<CityDto>>(cities);
@@ -71,7 +72,7 @@ namespace MashStudyDotNetCoreWebAPITutorials.Controllers
         [HttpPut("updatecity")]
         public async Task<IActionResult> UpdateCity([FromBody] CityDto newcity)
         {
-
+              
             var cityfromDb = await uow.CityRepository.FindCity(newcity.Id);
             cityfromDb.LastUpdatedby = 1;
             cityfromDb.LastUpdatedOn = DateTime.Now;
