@@ -16,9 +16,8 @@ using MashStudyDotNetCoreWebAPITutorials.Models;
 
 namespace MashStudyDotNetCoreWebAPITutorials.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class CityController : ControllerBase
+  
+    public class CityController : BaseController
     {
 
         private readonly IUnitOfWork uow;
@@ -34,7 +33,7 @@ namespace MashStudyDotNetCoreWebAPITutorials.Controllers
         [HttpGet("")]
         public async Task<IActionResult> Get()
         {
-            throw new UnauthorizedAccessException();
+           /* throw new UnauthorizedAccessException();*/
             IEnumerable<CityDto> citiesDto = mapper.Map<IEnumerable<CityDto>>(await uow.CityRepository.GetCitiesAsync());
             return Ok(citiesDto);
         }
