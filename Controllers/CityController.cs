@@ -1,16 +1,18 @@
-using System.Collections;
+//using System.Net;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
+
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
+
+using AutoMapper;
+
+using MashStudyDotNetCoreWebAPITutorials.Dto;
+using MashStudyDotNetCoreWebAPITutorials.Interfaces;
 //using MashStudyDotNetCoreWebAPITutorials.Data;
 //using Microsoft.EntityFrameworkCore;
 using MashStudyDotNetCoreWebAPITutorials.Models;
-using MashStudyDotNetCoreWebAPITutorials.Interfaces;
-using MashStudyDotNetCoreWebAPITutorials.Dto;
-using AutoMapper;
-using Microsoft.AspNetCore.JsonPatch;
 
 namespace MashStudyDotNetCoreWebAPITutorials.Controllers
 {
@@ -32,12 +34,11 @@ namespace MashStudyDotNetCoreWebAPITutorials.Controllers
         [HttpGet("")]
         public async Task<IActionResult> Get()
         {
-            //  throw new UnauthorizedAccessException();  for global exception checking
-            var cities = await uow.CityRepository.GetCitiesAsync();
-            //   IEnumerable<CityDto> citiesDto=cities.Select(x=>new CityDto{Id=x.Id,Name=x.Name});
-            IEnumerable<CityDto> citiesDto = mapper.Map<IEnumerable<CityDto>>(cities);
+            throw new UnauthorizedAccessException();
+            IEnumerable<CityDto> citiesDto = mapper.Map<IEnumerable<CityDto>>(await uow.CityRepository.GetCitiesAsync());
             return Ok(citiesDto);
         }
+        
         /*
         [HttpPost("addcity/{cityname}")]
         public async Task<IActionResult> AddCity(string CityName)
