@@ -13,10 +13,12 @@ using MashStudyDotNetCoreWebAPITutorials.Interfaces;
 //using MashStudyDotNetCoreWebAPITutorials.Data;
 //using Microsoft.EntityFrameworkCore;
 using MashStudyDotNetCoreWebAPITutorials.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MashStudyDotNetCoreWebAPITutorials.Controllers
 {
   
+    [Authorize]
     public class CityController : BaseController
     {
 

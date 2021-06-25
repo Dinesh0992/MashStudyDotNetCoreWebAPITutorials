@@ -14,7 +14,9 @@ using MashStudyDotNetCoreWebAPITutorials.Helpers;
 // using Microsoft.AspNetCore.Http;
 using MashStudyDotNetCoreWebAPITutorials.Extensions;
 using MashStudyDotNetCoreWebAPITutorials.Middlewares;
-
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace MashStudyDotNetCoreWebAPITutorials
 {
@@ -40,6 +42,18 @@ namespace MashStudyDotNetCoreWebAPITutorials
             services.AddDbContext<DataContext>(options=>options.UseSqlServer(Configuration.GetConnectionString("StudyMashWebAPIConnectionStrings")));
             services.AddScoped<IUnitOfWork,UnitOfWork>();
             services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
+            string secretkey=Configuration.GetSection("AppSettings:Key").Value;
+              var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretkey));
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+            .AddJwtBearer(opt =>{
+                opt.TokenValidationParameters=new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey=true,
+                    ValidateIssuer=false,
+                    ValidateAudience=false,
+                    IssuerSigningKey=key
+                };
+            });
         }
         
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -51,7 +65,9 @@ namespace MashStudyDotNetCoreWebAPITutorials
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "MashStudyDotNetCoreWebAPITutorials v1"));
 
             app.UseRouting();
+            app.UseCors(m=>m.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
